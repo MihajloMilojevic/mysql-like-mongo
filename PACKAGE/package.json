@@ -1,0 +1,25 @@
+{
+  "name": "mysql-like-mongo",
+  "version": "1.0.0",
+  "description": "MySQL copy of mongoose for beginners",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MihajloMilojevic/mysql-like-mongo.git"
+  },
+  "keywords": [
+    "mysql",
+    "mongodb",
+    "mongoose",
+    "beginer"
+  ],
+  "author": "Mihajlo Milojević",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MihajloMilojevic/mysql-like-mongo/issues"
+  },
+  "homepage": "https://github.com/MihajloMilojevic/mysql-like-mongo#readme",
+  "dependencies": {
+    "serverless-mysql": "^1.5.4"
+  }
+}

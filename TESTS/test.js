@@ -28,5 +28,6 @@ const Grupa = mysql.Model("grupe", schema);
 	// await Grupa.create({naziv: "Paket test"});
 	all = (await Grupa.find({}))
 	console.log(all);
+	
 	mysql.connection.quit();
 })()

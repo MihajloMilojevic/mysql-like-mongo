@@ -8,7 +8,6 @@ function SQLType(value) {
 }
 
 function ConvertToType(value, type = dataTypes.STRING) {
-	return value;
 	if(value === null || value === undefined)
 		return null;
 	switch (type) {
@@ -142,15 +141,12 @@ function model(tableName, schema, DB) {
 	}
 	Model.find = async (filter) => {
 		const where = Where(filter);
-		console.log("before try");
 		try {
 			const result = await DB.query(
 				` SELECT * FROM ${tableName} ` + 
 				`WHERE ${where !== "" ?  where: 1}`
 			)
-			console.log("after DB.query");
 			const all = result.map((item => (new Model(item))))
-			console.log("after map");
 			return {error: null, data: all}
 		} catch (error) {
 			return {error, data: null};

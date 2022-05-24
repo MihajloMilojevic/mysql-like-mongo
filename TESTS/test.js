@@ -1,4 +1,4 @@
-const mysql = require("mysql-like-mongo");
+const mysql = require("../index");
 const { allowedNodeEnvironmentFlags } = require("process");
 
  mysql.Connect({

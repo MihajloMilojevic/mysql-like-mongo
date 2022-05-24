@@ -1,5 +1,5 @@
 {
-  "name": "mysql-like-mongo",
+  "name": "@mihajlomilojevic/mysql-like-mongo",
   "version": "1.0.0",
   "description": "MySQL copy of mongoose for beginners",
   "main": "index.js",

@@ -22,12 +22,14 @@ const schema = mysql.Schema({
 const Grupa = mysql.Model("grupe", schema);
 
 (async function() {
-	let all = await Grupa.find({})
-	console.log(all);
-	console.log(mysql.connection);
-	// await Grupa.create({naziv: "Paket test"});
-	all = (await Grupa.find({}))
-	console.log(all);
+	let a = new Grupa();
+	console.log(a);
+	// let all = await Grupa.find({})
+	// console.log(all);
+	// console.log(mysql.connection);
+	// // await Grupa.create({naziv: "Paket test"});
+	// all = (await Grupa.find({}))
+	// console.log(all);
 	
 	mysql.connection.quit();
 })()

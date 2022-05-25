@@ -75,7 +75,9 @@ function model(tableName, schema, DB) {
 		for(let key in schema) {
 			this[key] = null;
 			if(schema[key].hasOwnProperty("default"))
-				this[key] = ConvertToType(schema[key].default, schema[key].type);
+				this[key] = typeof schema[key].default === "function" ? 
+							ConvertToType(schema[key].default(), schema[key].type) : 
+							ConvertToType(schema[key].default, schema[key].type);
 			if(params.hasOwnProperty(key))
 				this[key] = ConvertToType(params[key], schema[key].type);
 		}
@@ -175,6 +177,14 @@ function model(tableName, schema, DB) {
 				`DELETE FROM ${tableName} ` + 
 				`WHERE ${where !== "" ?  where: 1}`
 			)
+			return {error: null, data: result}
+		} catch (error) {
+			return {error, data: null};
+		}
+	}
+	Model.query = async (query) => {
+		try {
+			const result = await DB.query(query)
 			return {error: null, data: result}
 		} catch (error) {
 			return {error, data: null};

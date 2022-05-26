@@ -54,7 +54,7 @@ function Set(changes) {
 	return queries.join(" , ");
 }
 
-function model(tableName, schema, DB) {
+function model(tableName, schema, getDB) {
 	schema = Schema(schema);
 	let mutableFields = [];
 	let allFields = [];
@@ -85,6 +85,7 @@ function model(tableName, schema, DB) {
 	Model.prototype = {
 		insert: async function() {
 				try {
+					const DB = getDB();
 					const result = await DB.query(
 							`INSERT INTO ${tableName}(${mutableFields.join(", ")}) ` +
 							`VALUES(${mutableFields.map(() => "?").join(", ")})`
@@ -100,6 +101,7 @@ function model(tableName, schema, DB) {
 			},
 		update: async function() {
 				try {
+					const DB = getDB();
 					const result = await DB.query(
 							`UPDATE ${tableName} ` +
 							`SET ${mutableFields.map(key => `${key}} = ?`).join(" , ")} ` +
@@ -117,6 +119,7 @@ function model(tableName, schema, DB) {
 			},
 		delete: async function() {
 				try {
+					const DB = getDB();
 					const result = await DB.query(
 							`DELETE FROM ${tableName} ` +
 							`WHERE ${primaryKeys.map(key => `${key} = ?`).join(" AND ")}`
@@ -142,8 +145,9 @@ function model(tableName, schema, DB) {
 		return result;
 	}
 	Model.find = async (filter) => {
-		const where = Where(filter);
 		try {
+			const DB = getDB();
+			const where = Where(filter);
 			const result = await DB.query(
 				` SELECT * FROM ${tableName} ` + 
 				`WHERE ${where !== "" ?  where: 1}`
@@ -155,11 +159,12 @@ function model(tableName, schema, DB) {
 		}
 	}
 	Model.findAndUpdate = async (filter, changes) => {
-		const where = Where(filter);
-		const set = Set(changes)
-		if(set === "")
-			throw new Error("Must have at least one change")
 		try {
+			const DB = getDB();
+			const where = Where(filter);
+			const set = Set(changes)
+			if(set === "")
+				throw new Error("Must have at least one change")
 			const result = await DB.query(
 				`UPDATE ${tableName} ` +
 				`SET ${set} ` + 
@@ -171,8 +176,9 @@ function model(tableName, schema, DB) {
 		}
 	}
 	Model.findAndDelete = async (filter) => {
-		const where = Where(filter);
 		try {
+			const DB = getDB();
+			const where = Where(filter);
 			const result = await DB.query(
 				`DELETE FROM ${tableName} ` + 
 				`WHERE ${where !== "" ?  where: 1}`
@@ -184,6 +190,7 @@ function model(tableName, schema, DB) {
 	}
 	Model.query = async (query) => {
 		try {
+			const DB = getDB();
 			const result = await DB.query(query)
 			return {error: null, data: result}
 		} catch (error) {

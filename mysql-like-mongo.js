@@ -11,7 +11,7 @@ function MySqllikeMongo() {
 	this.Schema = Schema;
 	this.DataTypes = DataTypes;
 	this.Model = function(tableName, schema){
-		return model(tableName, schema, this.connection)
+		return model(tableName, schema, () => this.connection)
 	}
 }
 

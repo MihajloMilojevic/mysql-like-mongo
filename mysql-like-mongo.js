@@ -13,6 +13,14 @@ function MySqllikeMongo() {
 	this.Model = function(tableName, schema){
 		return model(tableName, schema, () => this.connection)
 	}
+	this.Query = function(sql) {
+		try {
+			const data = await this.connection.query(sql);
+			return {error: null, data}
+		} catch (error) {
+			return {error, data: null}
+		}
+	}
 }
 
 module.exports = new MySqllikeMongo();

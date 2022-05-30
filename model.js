@@ -92,7 +92,7 @@ function model(tableName, schema, getDB) {
 						,
 						mutableFields.map(key => this[key])
 					)
-					for(let key in autoFields)
+					for(let key of autoFields)
 						this[key] = result.insertId
 					return {error: null, data: result}
 				} catch (error) {

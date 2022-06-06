@@ -146,7 +146,7 @@ function model(tableName, schema, getDB) {
 					return {error, data: null}
 				}
 			},
-		delete: async function() {
+		delete: async function() { // method for deleting instance from database
 				try {
 					const DB = getDB();
 					const result = await DB.query(
@@ -162,17 +162,21 @@ function model(tableName, schema, getDB) {
 			},
 		
 	}
+	// static function that adds method directly to Model
 	Model.addStaticMethod = function(name, method) {
 		Model[name] = method;
 	}
+	// static function that adds method for every instance
 	Model.addMethod =  function(name, method) {
 		Model.prototype[name] = method;
 	}
+	// static method that creates new instance and inserts it
 	Model.create = async (data) => {
 		const newObj = new Model(data);
 		const result = await newObj.insert();
 		return result;
 	}
+	// function that finds method filtered by filter objected
 	Model.find = async (filter) => {
 		try {
 			const DB = getDB();
@@ -181,12 +185,13 @@ function model(tableName, schema, getDB) {
 				` SELECT * FROM ${tableName} ` + 
 				`WHERE ${where !== "" ?  where: 1}`
 			)
-			const all = result.map((item => (new Model(item))))
+			const all = result.map((item => (new Model(item)))) // returns array of instances of model
 			return {error: null, data: all}
 		} catch (error) {
 			return {error, data: null};
 		}
 	}
+	// function that finds and updates 
 	Model.findAndUpdate = async (filter, changes) => {
 		try {
 			const DB = getDB();
@@ -204,6 +209,7 @@ function model(tableName, schema, getDB) {
 			return {error, data: null};
 		}
 	}
+	// function that deletes
 	Model.findAndDelete = async (filter) => {
 		try {
 			const DB = getDB();
@@ -217,6 +223,7 @@ function model(tableName, schema, getDB) {
 			return {error, data: null};
 		}
 	}
+	// custom query
 	Model.query = async (query) => {
 		try {
 			const DB = getDB();

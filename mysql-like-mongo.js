@@ -4,16 +4,16 @@ const DataTypes = require("./dataTypes");
 const model = require("./model");
 
 function MySqllikeMongo() {
-	this.connection = null;
-	this.Connect = function({host, database, user, password}) {
+	this.connection = null; // connection 
+	this.Connect = function({host, database, user, password}) { // function to connect
 		this.connection = Connect({host, user, password, database})
 	}
-	this.Schema = Schema;
-	this.DataTypes = DataTypes;
-	this.Model = function(tableName, schema){
-		return model(tableName, schema, () => this.connection)
+	this.Schema = Schema; // schema
+	this.DataTypes = DataTypes; //dataTypes
+	this.Model = function(tableName, schema){ // function for creating a model
+		return model(tableName, schema, () => this.connection) // () => this.connection returns current connetion every time model is created
 	}
-	this.Query = async function(sql) {
+	this.Query = async function(sql) { // function to query database without using any model
 		try {
 			const data = await this.connection.query(sql);
 			return {error: null, data}
@@ -23,4 +23,4 @@ function MySqllikeMongo() {
 	}
 }
 
-module.exports = new MySqllikeMongo();
+module.exports = new MySqllikeMongo(); // returns new instance of this this class

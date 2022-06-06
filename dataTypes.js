@@ -1,3 +1,5 @@
+// defines basic datatypes
+
 const STRING = "VARCHAR";
 const INTEGER = "INTEGER";
 const FLOAT = "FLOAT";

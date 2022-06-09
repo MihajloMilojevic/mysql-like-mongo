@@ -166,7 +166,7 @@ function model(tableName, schema, getDB) {
 				`VALUES ${
 					data.map(
 						() => (
-								`(${mutableFields.map(() => "?").join(", ")}),`
+								`(${mutableFields.map(() => "?").join(", ")})`
 							)
 					).join(", ")
 				}`

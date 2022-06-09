@@ -113,52 +113,40 @@ function model(tableName, schema, getDB) {
 	}
 	Model.prototype = {
 		insert: async function() { // method that inserts instance into database
-				try {
-					const DB = getDB();
-					const result = await DB.query(
-							`INSERT INTO ${tableName}(${mutableFields.join(", ")}) ` +
-							`VALUES(${mutableFields.map(() => "?").join(", ")})`
-						,
-						mutableFields.map(key => this[key]) 
-					)
-					for(let key of autoFields)
-						this[key] = result.insertId // sets auto fileds to those that are inserted
-					return {error: null, data: result}
-				} catch (error) {
-					return {error, data: null}
-				}
+				const DB = getDB();
+				const result = await DB.query(
+						`INSERT INTO ${tableName}(${mutableFields.join(", ")}) ` +
+						`VALUES(${mutableFields.map(() => "?").join(", ")})`
+					,
+					mutableFields.map(key => this[key]) 
+				)
+				for(let key of autoFields)
+					this[key] = result.insertId // sets auto fileds to those that are inserted
+				return result
 			},
 		update: async function() { // method that updates instance by its ids
-				try {
-					const DB = getDB();
-					const result = await DB.query(
-							`UPDATE ${tableName} ` +
-							`SET ${mutableFields.map(key => `${key}} = ?`).join(" , ")} ` +
-							`WHERE ${primaryKeys.map(key => `${key} = ?`).join(" AND ")}`
-						,
-						[
-							...mutableFields.map(key => this[key]),
-							...primaryKeys.map(key => this[key])
-						]
-					)
-					return {error: null, data: result}
-				} catch (error) {
-					return {error, data: null}
-				}
+				const DB = getDB();
+				const result = await DB.query(
+						`UPDATE ${tableName} ` +
+						`SET ${mutableFields.map(key => `${key}} = ?`).join(" , ")} ` +
+						`WHERE ${primaryKeys.map(key => `${key} = ?`).join(" AND ")}`
+					,
+					[
+						...mutableFields.map(key => this[key]),
+						...primaryKeys.map(key => this[key])
+					]
+				)
+				return result
 			},
 		delete: async function() { // method for deleting instance from database
-				try {
-					const DB = getDB();
-					const result = await DB.query(
-							`DELETE FROM ${tableName} ` +
-							`WHERE ${primaryKeys.map(key => `${key} = ?`).join(" AND ")}`
-						,
-							primaryKeys.map(key => this[key])
-					)
-					return {error: null, data: result}
-				} catch (error) {
-					return {error, data: null}
-				}
+			const DB = getDB();
+			const result = await DB.query(
+					`DELETE FROM ${tableName} ` +
+					`WHERE ${primaryKeys.map(key => `${key} = ?`).join(" AND ")}`
+				,
+					primaryKeys.map(key => this[key])
+			)
+			return result
 			},
 		
 	}
@@ -172,66 +160,61 @@ function model(tableName, schema, getDB) {
 	}
 	// static method that creates new instance and inserts it
 	Model.create = async (data) => {
-		const newObj = new Model(data);
-		const result = await newObj.insert();
-		return result;
+		const DB = getDB();
+		const result = await DB.query(
+				`INSERT INTO ${tableName}(${mutableFields.join(", ")}) ` +
+				`VALUES ${
+					data.map(
+						() => (
+								`(${mutableFields.map(() => "?").join(", ")}),`
+							)
+					).join(", ")
+				}`
+			,
+			data.map(el => mutableFields.map(key => el[key]))
+		)
+		return result
 	}
 	// function that finds method filtered by filter objected
 	Model.find = async (filter) => {
-		try {
-			const DB = getDB();
-			const where = Where(filter);
-			const result = await DB.query(
-				` SELECT * FROM ${tableName} ` + 
-				`WHERE ${where !== "" ?  where: 1}`
-			)
-			const all = result.map((item => (new Model(item)))) // returns array of instances of model
-			return {error: null, data: all}
-		} catch (error) {
-			return {error, data: null};
-		}
+		const DB = getDB();
+		const where = Where(filter);
+		const result = await DB.query(
+			` SELECT * FROM ${tableName} ` + 
+			`WHERE ${where !== "" ?  where: 1}`
+		)
+		const all = result.map((item => (new Model(item)))) // returns array of instances of model
+		return all
 	}
 	// function that finds and updates 
 	Model.findAndUpdate = async (filter, changes) => {
-		try {
-			const DB = getDB();
-			const where = Where(filter);
-			const set = Set(changes)
-			if(set === "")
-				throw new Error("Must have at least one change")
-			const result = await DB.query(
-				`UPDATE ${tableName} ` +
-				`SET ${set} ` + 
-				`WHERE ${where !== "" ? where : 1}`
-			)
-			return {error: null, data: result}
-		} catch (error) {
-			return {error, data: null};
-		}
+		const DB = getDB();
+		const where = Where(filter);
+		const set = Set(changes)
+		if(set === "")
+			throw new Error("Must have at least one change")
+		const result = await DB.query(
+			`UPDATE ${tableName} ` +
+			`SET ${set} ` + 
+			`WHERE ${where !== "" ? where : 1}`
+		)
+		return result
 	}
 	// function that deletes
 	Model.findAndDelete = async (filter) => {
-		try {
-			const DB = getDB();
-			const where = Where(filter);
-			const result = await DB.query(
-				`DELETE FROM ${tableName} ` + 
-				`WHERE ${where !== "" ?  where: 1}`
-			)
-			return {error: null, data: result}
-		} catch (error) {
-			return {error, data: null};
-		}
+		const DB = getDB();
+		const where = Where(filter);
+		const result = await DB.query(
+			`DELETE FROM ${tableName} ` + 
+			`WHERE ${where !== "" ?  where: 1}`
+		)
+		return result
 	}
 	// custom query
 	Model.query = async (query) => {
-		try {
-			const DB = getDB();
-			const result = await DB.query(query)
-			return {error: null, data: result}
-		} catch (error) {
-			return {error, data: null};
-		}
+		const DB = getDB();
+		const result = await DB.query(query)
+		return result
 	}
 	return Model
 }

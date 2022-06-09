@@ -14,12 +14,8 @@ function MySqllikeMongo() {
 		return model(tableName, schema, () => this.connection) // () => this.connection returns current connetion every time model is created
 	}
 	this.Query = async function(sql) { // function to query database without using any model
-		try {
-			const data = await this.connection.query(sql);
-			return {error: null, data}
-		} catch (error) {
-			return {error, data: null}
-		}
+		const data = await this.connection.query(sql);
+		return data
 	}
 }
 

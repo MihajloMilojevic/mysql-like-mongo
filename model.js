@@ -53,7 +53,6 @@ function Where(filter) {
 		}
 		else if(typeof filter[key] === "object") { // for objects example key: value
 			const keys = Object.keys(filter[key]);
-			console.log(keys);
 			for(let i = 0; i < keys.length; i++) { // loops through keys in an object
 				if(keys[i] === "null") { // check if its null and if it IS null or IS NOT (true or false)
 					if(filter[key][keys[i]])
@@ -128,7 +127,7 @@ function model(tableName, schema, getDB) {
 				const DB = getDB();
 				const result = await DB.query(
 						`UPDATE ${tableName} ` +
-						`SET ${mutableFields.map(key => `${key}} = ?`).join(" , ")} ` +
+						`SET ${mutableFields.map(key => `${key} = ?`).join(" , ")} ` +
 						`WHERE ${primaryKeys.map(key => `${key} = ?`).join(" AND ")}`
 					,
 					[
@@ -165,13 +164,9 @@ function model(tableName, schema, getDB) {
 				`INSERT INTO ${tableName}(${mutableFields.join(", ")}) ` +
 				`VALUES ${
 					data.map(
-						() => (
-								`(${mutableFields.map(() => "?").join(", ")})`
-							)
+						el => (`(${mutableFields.map(key => `'${el[key]}'`).join(", ")})`)
 					).join(", ")
 				}`
-			,
-			data.map(el => mutableFields.map(key => el[key]))
 		)
 		return result
 	}

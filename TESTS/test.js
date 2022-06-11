@@ -1,5 +1,6 @@
 const mysql = require("../index");
 const { allowedNodeEnvironmentFlags } = require("process");
+const model = require("../model");
 
  mysql.Connect({
 	host: "localhost",
@@ -10,26 +11,27 @@ const { allowedNodeEnvironmentFlags } = require("process");
 
 console.log("TEST CONNECTION",mysql.Connection);
 const schema = mysql.Schema({
-	id_grupe: {
+	id_grada: {
 		type: mysql.DataTypes.INTEGER,
-		primary: true,
-		auto: true
+		primary: true
 	},
 	naziv: {
-		type: mysql.DataTypes.STRING
+		type: mysql.DataTypes.STRING,
+		default: ""
 	}
 })
-const Grupa = mysql.Model("grupe", schema);
+const Grad = mysql.Model("gradovi", schema);
 
 (async function() {
-	// let a = new Grupa();
-	// console.log(a);
-	let all = await Grupa.find({})
+	var all = await Grad.create([
+		{id_grada: 1, naziv: "hello"},
+		{id_grada: 2, naziv: "hello"},
+		{id_grada: 3, naziv: "hello"},
+		{id_grada: 4, naziv: "hello"},
+		{id_grada: 5, naziv: "hello"},
+		{id_grada: 6, naziv: "hello"}
+	]);
 	console.log(all);
-	// console.log(mysql.connection);
-	// // await Grupa.create({naziv: "Paket test"});
-	// all = (await Grupa.find({}))
-	// console.log(all);
 	
 	mysql.connection.quit();
 })()
